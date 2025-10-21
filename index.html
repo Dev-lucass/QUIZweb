@@ -6,7 +6,7 @@
 <title>Quiz Automotivo - 10 Perguntas</title>
 <style>
   :root{
-    --accent: #1f8ef1;              /* azul principal (mantido nos dois modos) */
+    --accent: #1f8ef1;
     --accent-2:#7cc7ff;
     --success:#20c997;
     --danger:#ff6b6b;
@@ -30,6 +30,7 @@
     --maxw: 980px;
     --shadow: 0 8px 30px rgba(2,6,23,0.6);
     --transition: 180ms ease;
+    --gap: 20px;
   }
 
   /* light theme overrides */
@@ -37,12 +38,12 @@
     --bg: #f5f8fb;
     --bg-end: #f8fbff;
     --surface: linear-gradient(180deg, rgba(2,6,23,0.02), rgba(2,6,23,0.01));
-    --card-bg: #ffffff;                  /* fundo dos cards mais claro */
+    --card-bg: #ffffff;
     --card-border: rgba(2,6,23,0.06);
     --muted: #556177;
-    --text: #041223;                     /* pergunta e texto principal */
-    --option-bg: #ffffff;                /* fundo das opções */
-    --option-border: rgba(2,6,23,0.06);  /* borda das opções */
+    --text: #041223;
+    --option-bg: #ffffff;
+    --option-border: rgba(2,6,23,0.06);
     --glass: rgba(2,6,23,0.04);
     --dot-bg: linear-gradient(90deg,var(--accent),var(--accent-2));
     --toggle-bg: #eef6ff;
@@ -55,30 +56,29 @@
   body{
     margin:0;
     font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    /* use --bg and --bg-end so light theme is not overlaid by a dark stop */
     background: linear-gradient(180deg, var(--bg), var(--bg-end) 100%);
     color: var(--text);
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:20px;
+    padding:calc(16px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-left)) calc(16px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-right));
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     transition: background var(--transition), color var(--transition);
   }
 
   .container{
-    width:100%;
-    max-width:var(--maxw);
+    width:min(100%, var(--maxw));
     background:var(--surface);
     border-radius:var(--radius);
-    padding:20px;
+    padding:18px;
     box-shadow: var(--shadow);
     display:grid;
     grid-template-columns: 1fr 320px;
-    gap:20px;
+    gap:var(--gap);
     align-items:start;
     transition: all var(--transition);
+    max-width: 980px;
   }
 
   /* header with theme toggle */
@@ -87,10 +87,10 @@
     justify-content:space-between;
     align-items:center;
     gap:12px;
-    margin-bottom:2px;
+    margin-bottom:4px;
   }
   .title{
-    font-size:18px;
+    font-size:clamp(16px,2.4vw,18px);
     font-weight:700;
     letter-spacing:0.2px;
   }
@@ -103,9 +103,9 @@
   .card{
     background: var(--card-bg);
     border-radius:12px;
-    padding:18px;
+    padding:16px;
     border:1px solid var(--card-border);
-    min-height:320px;
+    min-height:260px;
     transition: box-shadow var(--transition), background var(--transition);
     display:flex;
     flex-direction:column;
@@ -135,7 +135,7 @@
   }
 
   .question{
-    font-size:18px;
+    font-size:clamp(16px,3.2vw,20px);
     font-weight:700;
     line-height:1.25;
     color:var(--text);
@@ -146,7 +146,7 @@
     display:grid;
     grid-template-columns: 1fr 1fr;
     gap:12px;
-    margin-top:6px;
+    margin-top:8px;
   }
 
   .option{
@@ -156,7 +156,7 @@
     border-radius:10px;
     cursor:pointer;
     text-align:left;
-    font-size:15px;
+    font-size:clamp(14px,2.2vw,16px);
     transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
     display:flex;
     align-items:center;
@@ -164,14 +164,20 @@
     user-select:none;
     color: var(--text);
     box-shadow: 0 2px 10px rgba(2,6,23,0.06);
-    min-height:64px;
+    min-height:56px; /* touch-friendly */
+    padding-inline:14px;
   }
   .option:active{ transform:translateY(1px) }
   .option:hover{ transform: translateY(-6px); box-shadow: 0 14px 34px rgba(2,6,23,0.08) }
 
+  /* remove hover elevation on touch devices */
+  @media (hover: none) {
+    .option:hover { transform: none; box-shadow: 0 6px 16px rgba(2,6,23,0.06); }
+  }
+
   .bullet{
-    min-width:44px;
-    height:44px;
+    min-width:48px;
+    height:48px;
     border-radius:10px;
     display:inline-grid;
     place-items:center;
@@ -217,19 +223,20 @@
     background:var(--accent);
     border:none;
     color:white;
-    padding:10px 16px;
+    padding:12px 18px;
     border-radius:10px;
     font-weight:700;
     cursor:pointer;
     font-size:15px;
     transition: transform var(--transition);
+    min-height:48px; /* touch-friendly */
   }
   .btn.secondary{
     background:transparent;
     border:1px solid var(--card-border);
     color:var(--muted);
   }
-  .btn:active{ transform:translateY(1px) }
+  .btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none }
 
   /* side panel */
   .side{
@@ -271,21 +278,24 @@
   .theme-toggle{
     display:inline-flex;
     align-items:center;
-    gap:8px;
+    gap:10px;
     background: var(--toggle-bg);
     border:1px solid var(--card-border);
     color: var(--toggle-color);
-    padding:8px 10px;
+    padding:10px 12px;
     border-radius:999px;
     cursor:pointer;
     font-weight:700;
     font-size:13px;
+    min-height:44px;
   }
   .theme-toggle .dot{
     width:18px; height:18px; border-radius:6px;
     background: var(--dot-bg);
     box-shadow: 0 4px 10px rgba(31,142,241,0.18);
+    flex-shrink:0;
   }
+  .theme-toggle span.label { color: var(--toggle-color); }
 
   /* responsive layout improvements */
   @media (max-width:980px){
@@ -298,18 +308,26 @@
     .panel{ flex:1; }
   }
   @media (max-width:520px){
-    body{ padding:10px; }
+    body{ padding:calc(10px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-right)); }
     .question{ font-size:16px; }
-    .options{ grid-template-columns:1fr; }
+    .options{ grid-template-columns:1fr; gap:10px; }
     .bullet{ min-width:40px; height:40px }
-    .option{ min-height:60px; padding:12px; }
+    .option{ min-height:64px; padding:12px; }
     .controls{ justify-content:stretch; flex-direction:column-reverse; gap:10px; }
     .btn{ width:100%; }
     .header{ gap:8px; }
     .topbar{ flex-direction:column; align-items:flex-start; gap:8px; }
+    .container{ border-radius:12px; padding:12px; }
   }
 
-  /* small accessibility focus */
+  /* very small phones */
+  @media (max-width:420px){
+    .bullet{ min-width:36px; height:36px; font-size:13px; }
+    .option{ padding-inline:10px; }
+    .theme-toggle{ padding:8px 10px; gap:8px; }
+  }
+
+  /* accessibility focus */
   .option:focus{ outline:3px solid rgba(31,142,241,0.12); outline-offset:4px; }
   .theme-toggle:focus{ outline:3px solid rgba(31,142,241,0.12); outline-offset:4px; }
 </style>
@@ -324,9 +342,9 @@
         </div>
 
         <div class="header-controls">
-          <button class="theme-toggle" id="themeToggle" aria-pressed="false" title="Alternar modo claro/escuro">
+          <button class="theme-toggle" id="themeToggle" aria-pressed="false" title="Alternar modo claro/escuro" aria-label="Alternar tema">
             <span class="dot" aria-hidden="true"></span>
-            <span style="font-weight:700; color:var(--text)">Modo</span>
+            <span class="label">Modo</span>
           </button>
         </div>
       </div>
@@ -424,7 +442,6 @@ themeToggle.setAttribute('aria-pressed', savedTheme === 'light' ? 'true' : 'fals
 function refreshThemeToggle(){
   const isLight = appRoot.getAttribute('data-theme') === 'light';
   themeToggle.setAttribute('aria-pressed', isLight ? 'true' : 'false');
-  // atualiza atributo title para acessibilidade
   themeToggle.title = isLight ? 'Alternar para modo escuro' : 'Alternar para modo claro';
 }
 refreshThemeToggle();
@@ -473,7 +490,6 @@ function selectOption(button, index){
   selectedIndex = index;
   nextBtn.disabled = false;
 
-  // update status text
   qstatusEl.textContent = (index === correct) ? 'Resposta correta' : 'Resposta incorreta';
 }
 
@@ -538,8 +554,8 @@ function updateResultPanel(){
 
 /* troca de tema (dark <-> light) */
 themeToggle.addEventListener('click', () => {
-  const current = appRoot.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-  const next = current === 'light' ? 'dark' : 'light';
+  const currentTheme = appRoot.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  const next = currentTheme === 'light' ? 'dark' : 'light';
   appRoot.setAttribute('data-theme', next);
   localStorage.setItem('qa_theme', next);
   refreshThemeToggle();
@@ -550,6 +566,11 @@ document.addEventListener('keydown', (e) => {
   if ((e.key === 't' || e.key === 'T') && (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')) {
     themeToggle.click();
   }
+});
+
+/* atualiza estilos responsivos se necessário ao redimensionar (pequena melhora UX) */
+window.addEventListener('resize', () => {
+  // se quiser fazer algo dinâmico ao redimensionar, coloque aqui
 });
 
 /* inicializa UI */
