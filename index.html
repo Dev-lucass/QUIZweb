@@ -24,7 +24,6 @@
       --dot-bg: linear-gradient(90deg, var(--accent), var(--accent-2));
       --radius: 14px;
       --maxw: 980px;
-      --shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
       --transition: 180ms ease;
       --gap: 20px;
     }
@@ -43,7 +42,8 @@
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
+      /* centraliza verticalmente */
     }
 
     .container {
@@ -51,14 +51,11 @@
       background: var(--surface);
       border-radius: var(--radius);
       padding: 18px;
-      box-shadow: var(--shadow);
       display: grid;
       grid-template-columns: 1fr 320px;
       gap: var(--gap);
-      align-items: start;
       transition: all var(--transition);
       margin: 16px auto;
-      min-height: calc(100vh - 32px);
     }
 
     .topbar {
@@ -84,7 +81,6 @@
       border-radius: 12px;
       padding: 16px;
       border: 1px solid var(--card-border);
-      min-height: 260px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -143,10 +139,10 @@
       align-items: center;
       gap: 12px;
       user-select: none;
-      box-shadow: 0 2px 10px rgba(2, 6, 23, 0.06);
       min-height: 56px;
       color: var(--text);
       transition: transform 0.2s;
+      box-shadow: none;
     }
 
     .option:hover {
@@ -219,6 +215,7 @@
       border-radius: 10px;
       padding: 12px;
       border: 1px solid var(--card-border);
+      box-shadow: none;
     }
 
     .score-big {
@@ -255,6 +252,7 @@
       text-align: center;
     }
 
+    /* Responsividade */
     @media (max-width: 900px) {
       .container {
         grid-template-columns: 1fr;
@@ -330,7 +328,7 @@
       </div>
       <div class="header">
         <div class="qnumber" id="qnum">Pergunta 1 / 10</div>
-        <div class="qstatus" id="qstatus" style="font-size:13px;color:var(--muted)">Resposta: —</div>
+        <div class="qstatus" id="qstatus">Resposta: —</div>
       </div>
       <div class="progress-wrap">
         <div class="progress" id="progress"></div>
