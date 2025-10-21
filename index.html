@@ -22,8 +22,6 @@
       --option-border: rgba(255, 255, 255, 0.08);
       --glass: rgba(255, 255, 255, 0.04);
       --dot-bg: linear-gradient(90deg, var(--accent), var(--accent-2));
-      --toggle-bg: transparent;
-      --toggle-color: var(--muted);
       --radius: 14px;
       --maxw: 980px;
       --shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
@@ -31,36 +29,19 @@
       --gap: 20px;
     }
 
-    :root[data-theme="light"] {
-      --bg: #f5f8fb;
-      --bg-end: #f8fbff;
-      --surface: linear-gradient(180deg, rgba(2, 6, 23, 0.02), rgba(2, 6, 23, 0.01));
-      --card-bg: #fff;
-      --card-border: rgba(2, 6, 23, 0.06);
-      --muted: #556177;
-      --text: #041223;
-      --option-bg: #fff;
-      --option-border: rgba(2, 6, 23, 0.06);
-      --glass: rgba(2, 6, 23, 0.04);
-      --dot-bg: linear-gradient(90deg, var(--accent), var(--accent-2));
-      --toggle-bg: #eef6ff;
-      --toggle-color: #041223;
-      --shadow: 0 6px 22px rgba(2, 6, 23, 0.06);
-    }
-
     * {
-      box-sizing: border-box
+      box-sizing: border-box;
     }
 
     html,
     body {
-      height: 100%
+      height: 100%;
     }
 
     body {
       margin: 0;
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: linear-gradient(180deg, var(--bg), var(--bg-end)100%);
+      background: linear-gradient(180deg, var(--bg), var(--bg-end) 100%);
       color: var(--text);
       display: flex;
       align-items: center;
@@ -273,34 +254,7 @@
       text-align: center;
     }
 
-    .header-controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .theme-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--toggle-bg);
-      border: 1px solid var(--card-border);
-      color: var(--toggle-color);
-      padding: 10px 12px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    .theme-toggle .dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 6px;
-      background: var(--dot-bg);
-    }
-
-    @media (max-width:900px) {
+    @media (max-width: 900px) {
       .container {
         grid-template-columns: 1fr;
         gap: 14px;
@@ -308,21 +262,23 @@
       }
 
       .side {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      .panel {
+        flex: 1 1 48%;
       }
     }
 
-    @media (max-width:600px) {
+    @media (max-width: 600px) {
       .container {
         padding: 12px;
       }
 
       .options {
         grid-template-columns: 1fr;
-      }
-
-      .side {
-        flex-direction: column;
       }
 
       .controls {
@@ -338,18 +294,21 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
+      .side {
+        flex-direction: column;
+      }
+
+      .panel {
+        flex: 1 1 100%;
+      }
     }
 
-    @media (max-width:420px) {
+    @media (max-width: 420px) {
       .bullet {
         min-width: 36px;
         height: 36px;
         font-size: 13px;
-      }
-
-      .theme-toggle {
-        padding: 8px 10px;
-        gap: 8px;
       }
 
       .container {
@@ -366,10 +325,6 @@
         <div>
           <div class="title">Quiz Automotivo</div>
           <div class="meta">Carros · Motores · Peças</div>
-        </div>
-        <div class="header-controls">
-          <button class="theme-toggle" id="themeToggle"><span class="dot"></span><span
-              class="label">Modo</span></button>
         </div>
       </div>
       <div class="header">
@@ -427,6 +382,7 @@
       { question: "O que indica a relação de compressão de um motor?", options: ["Tamanho do tanque", "Proporção ar/combustível", "Relação entre volumes total e da câmara compressa", "Diâmetro do pistão"], answer: 2 },
       { question: "Qual componente reduz vibrações e transmite potência do motor para a transmissão?", options: ["Volante do motor (flywheel)", "Radiador", "Sensor MAP", "Eixo cardan"], answer: 0 }
     ];
+
     let current = 0, score = 0, selectedIndex = null, total = quiz.length;
     const qnumEl = document.getElementById("qnum"), questionEl = document.getElementById("question"),
       optionsEl = document.getElementById("options"), qstatusEl = document.getElementById("qstatus"),
@@ -434,15 +390,8 @@
       pctEl = document.getElementById("pct"), scoreBox = document.getElementById("scoreBox"),
       scoreInfo = document.getElementById("scoreInfo"), nextBtn = document.getElementById("nextBtn"),
       restartBtn = document.getElementById("restartBtn"), finalPercent = document.getElementById("finalPercent"),
-      finalMessage = document.getElementById("finalMessage"), themeToggle = document.getElementById("themeToggle"),
-      appRoot = document.documentElement;
-    const savedTheme = localStorage.getItem("qa_theme") || "dark";
-    appRoot.setAttribute("data-theme", savedTheme);
-    function refreshThemeToggle() {
-      const isLight = appRoot.getAttribute("data-theme") === "light";
-      themeToggle.setAttribute("aria-pressed", isLight ? "true" : "false");
-    }
-    refreshThemeToggle();
+      finalMessage = document.getElementById("finalMessage");
+
     function render() {
       const item = quiz[current];
       qnumEl.textContent = `Pergunta ${current + 1} / ${total}`;
@@ -463,6 +412,7 @@
       updateSide();
       updateResultPanel();
     }
+
     function selectOption(button, index) {
       if (optionsEl.querySelector(".option.disabled")) return;
       const correct = quiz[current].answer;
@@ -476,6 +426,7 @@
       nextBtn.disabled = false;
       qstatusEl.textContent = (index === correct) ? "Resposta correta" : "Resposta incorreta";
     }
+
     nextBtn.addEventListener("click", () => {
       if (selectedIndex === null) return;
       if (selectedIndex === quiz[current].answer) score++;
@@ -484,23 +435,27 @@
       if (current < total) { render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
       else showFinal();
     });
+
     restartBtn.addEventListener("click", () => {
       current = 0; score = 0;
       restartBtn.style.display = "none";
       nextBtn.style.display = "inline-block";
       render(); window.scrollTo({ top: 0, behavior: "smooth" });
     });
+
     function updateProgress() {
       const pct = current >= total ? 100 : Math.round((current / total) * 100);
       progressEl.style.width = `${pct}%`;
       sideProgress.style.width = `${pct}%`;
       pctEl.textContent = `${pct}%`;
     }
+
     function updateSide() {
       scoreBox.textContent = score;
       scoreInfo.textContent = `${score} acertos de ${current}`;
       updateProgress();
     }
+
     function showFinal() {
       const pct = Math.round((score / total) * 100);
       progressEl.style.width = "100%";
@@ -516,16 +471,12 @@
       updateSide();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
     function updateResultPanel() {
       finalPercent.textContent = "--";
       finalMessage.textContent = "Complete o quiz";
     }
-    themeToggle.addEventListener("click", () => {
-      const next = appRoot.getAttribute("data-theme") === "light" ? "dark" : "light";
-      appRoot.setAttribute("data-theme", next);
-      localStorage.setItem("qa_theme", next);
-      refreshThemeToggle();
-    });
+
     render();
   </script>
 </body>
