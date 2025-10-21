@@ -43,7 +43,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      /* centraliza verticalmente */
     }
 
     .container {
@@ -125,6 +124,8 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       margin-top: 8px;
+      min-height: 240px;
+      /* altura fixa para todas perguntas */
     }
 
     .option {
@@ -384,12 +385,18 @@
     ];
 
     let current = 0, score = 0, selectedIndex = null, total = quiz.length;
-    const qnumEl = document.getElementById("qnum"), questionEl = document.getElementById("question"),
-      optionsEl = document.getElementById("options"), qstatusEl = document.getElementById("qstatus"),
-      progressEl = document.getElementById("progress"), sideProgress = document.getElementById("sideProgress"),
-      pctEl = document.getElementById("pct"), scoreBox = document.getElementById("scoreBox"),
-      scoreInfo = document.getElementById("scoreInfo"), nextBtn = document.getElementById("nextBtn"),
-      restartBtn = document.getElementById("restartBtn"), finalPercent = document.getElementById("finalPercent"),
+    const qnumEl = document.getElementById("qnum"),
+      questionEl = document.getElementById("question"),
+      optionsEl = document.getElementById("options"),
+      qstatusEl = document.getElementById("qstatus"),
+      progressEl = document.getElementById("progress"),
+      sideProgress = document.getElementById("sideProgress"),
+      pctEl = document.getElementById("pct"),
+      scoreBox = document.getElementById("scoreBox"),
+      scoreInfo = document.getElementById("scoreInfo"),
+      nextBtn = document.getElementById("nextBtn"),
+      restartBtn = document.getElementById("restartBtn"),
+      finalPercent = document.getElementById("finalPercent"),
       finalMessage = document.getElementById("finalMessage");
 
     function render() {
@@ -401,6 +408,7 @@
       nextBtn.disabled = true;
       nextBtn.textContent = current === total - 1 ? "Finalizar" : "Próxima";
       qstatusEl.textContent = "Resposta: —";
+
       item.options.forEach((opt, i) => {
         const btn = document.createElement("button");
         btn.className = "option";
@@ -408,6 +416,7 @@
         btn.addEventListener("click", () => selectOption(btn, i));
         optionsEl.appendChild(btn);
       });
+
       updateProgress();
       updateSide();
       updateResultPanel();
@@ -431,7 +440,6 @@
       if (selectedIndex === null) return;
       if (selectedIndex === quiz[current].answer) score++;
       current++;
-      updateSide();
       if (current < total) render();
       else showFinal();
       window.scrollTo({ top: 0, behavior: "smooth" });
