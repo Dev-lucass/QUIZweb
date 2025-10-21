@@ -35,15 +35,15 @@
 
     html,
     body {
-      height: 100%;
       margin: 0;
+      padding: 0;
+      min-height: 100vh;
       background: linear-gradient(180deg, var(--bg), var(--bg-end) 100%);
       color: var(--text);
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      padding: 16px;
+      justify-content: center;
+      align-items: flex-start;
     }
 
     .container {
@@ -57,8 +57,8 @@
       gap: var(--gap);
       align-items: start;
       transition: all var(--transition);
-      max-width: 980px;
-      margin: auto;
+      margin: 16px auto;
+      min-height: calc(100vh - 32px);
     }
 
     .topbar {
@@ -146,6 +146,7 @@
       box-shadow: 0 2px 10px rgba(2, 6, 23, 0.06);
       min-height: 56px;
       color: var(--text);
+      transition: transform 0.2s;
     }
 
     .option:hover {
@@ -171,6 +172,10 @@
     .option.incorrect {
       background: rgba(255, 107, 107, 0.12);
       border-color: rgba(255, 107, 107, 0.24);
+    }
+
+    .option.disabled {
+      pointer-events: none;
     }
 
     .controls {
@@ -250,7 +255,6 @@
       text-align: center;
     }
 
-    /* RESPONSIVIDADE */
     @media (max-width: 900px) {
       .container {
         grid-template-columns: 1fr;
@@ -430,15 +434,17 @@
       if (selectedIndex === quiz[current].answer) score++;
       current++;
       updateSide();
-      if (current < total) { render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+      if (current < total) render();
       else showFinal();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
     restartBtn.addEventListener("click", () => {
       current = 0; score = 0;
       restartBtn.style.display = "none";
       nextBtn.style.display = "inline-block";
-      render(); window.scrollTo({ top: 0, behavior: "smooth" });
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
     function updateProgress() {
@@ -460,14 +466,16 @@
       sideProgress.style.width = "100%";
       pctEl.textContent = `${pct}%`;
       finalPercent.textContent = `${pct}%`;
-      const msg = pct === 100 ? "Perfeito! Conhecimento de especialista." : pct >= 80 ? "Ótimo resultado!" : pct >= 50 ? "Bom — continue praticando." : "Precisa estudar mais.";
+      const msg = pct === 100 ? "Perfeito! Conhecimento de especialista." :
+        pct >= 80 ? "Ótimo resultado!" :
+          pct >= 50 ? "Bom — continue praticando." :
+            "Precisa estudar mais.";
       finalMessage.textContent = msg;
       questionEl.textContent = "Quiz finalizado!";
       optionsEl.innerHTML = "";
       nextBtn.style.display = "none";
       restartBtn.style.display = "inline-block";
       updateSide();
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function updateResultPanel() {
